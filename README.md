@@ -1,4 +1,4 @@
-Ajout:
+Ajouts au code donné:
 - connection/inscription pour avoir le droit de modifier/supprimer un fichier
 - déconnection
 
