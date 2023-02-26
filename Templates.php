@@ -1,4 +1,6 @@
 <?php
+
+
 require_once 'MarkDown.php';
 
 // templates transposés de 
@@ -13,10 +15,10 @@ function mainTPL($title,$body,$navlinks){
     	<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
         <title>$title</title>
     </head>
-    <body>
+    <body style='padding:0 20px;'>
         $body
         <hr></hr>
-        $navlinks
+        <span style='margin-right: 30px;'>$navlinks</span>
     </body>
 </html>
 HTML;
@@ -46,9 +48,46 @@ function errorTPL($error){
     return "<h1>Erreur: $error</h1>";
 }
 
+$log="";
 function bannerTPL($banner){
-    return "<p style='color:green'>$banner</p><hr></hr>";
+    
+    return "
+        <div  style='display: flex; justify-content: flex-end; align-items: center;'>
+            ".
+            displayLog()."
+         </div>
+        <div style='display: flex; justify-content: space-between; align-items: center;'>
+          <p style='color:green;'>$banner</p>
+          <div  style='display: flex; justify-content: flex-end; align-items: center;'>
+            <a href=login.php style='margin-right: 20px'>Login</a>
+            <a href=logout.php>Logout</a>
+            " . displayGestion() ."
+          </div>
+        </div>
+        <hr></hr>";
+   
 }
+
+function displayGestion(){
+    include 'connectDB.php';
+    if(isset($_SESSION['username'])) {
+        $select = mysqli_query($conn, "SELECT * FROM users WHERE username = '".$_SESSION['username']."' AND compte='manager'");
+		if(mysqli_num_rows($select)) {
+            return  "<a href=gestionnaire.php style='margin-left: 20px'>Gestion</a>";
+        }
+    }
+}
+
+function displayLog(){
+    if(!(isset($_SESSION['username'])))
+    {
+        return "<span style='margin:0; text-align: right;'>--- Logged out ---</span>";
+    }
+    else {
+        return "<span style='margin:0; text-align: right;'>--- Logged in as:  ". $_SESSION['username']. " --- </span>";
+    }
+}
+
 
 function viewLinkTPL($file,$name){
     global $wiki;
